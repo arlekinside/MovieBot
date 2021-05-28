@@ -1,0 +1,8 @@
+/src/main/java/com/github/arlekinside/bot/Configuration.java
+/gradle/
+/.gradle/
+/.idea/
+/build/
+/gradlew
+/gradlew.bat
+/settings.gradle
