@@ -24,10 +24,10 @@ public class ButtonServiceImpl implements ButtonService {
 
     @Override
     public void addMovie() {
-        AnswerCallbackQuery answer = new AnswerCallbackQuery();
-        answer.setText("Processing...");
-        answer.setCallbackQueryId(update.getCallbackQuery().getId());
-        answer.setShowAlert(false);
+        AnswerCallbackQuery answer = new AnswerCallbackQuery()
+                .setText("Processing...")
+                .setCallbackQueryId(update.getCallbackQuery().getId())
+                .setShowAlert(false);
         try {
             bot.execute(answer);
         } catch (TelegramApiException e) {
@@ -36,9 +36,9 @@ public class ButtonServiceImpl implements ButtonService {
 
         String movieId = update.getCallbackQuery().getData().substring(1);
 
-        SendMessage msg = new SendMessage();
-        msg.setChatId(update.getCallbackQuery().getId());
-        msg.setText(update.getCallbackQuery().getData() + " " + movieId);
+        SendMessage msg = new SendMessage()
+                .setChatId(update.getCallbackQuery().getId())
+                .setText(update.getCallbackQuery().getData() + " " + movieId);
         try {
             bot.execute(msg);
         } catch (TelegramApiException e) {
@@ -49,9 +49,9 @@ public class ButtonServiceImpl implements ButtonService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        SendMessage message = new SendMessage();
-        message.setChatId(Long.valueOf(update.getCallbackQuery().getFrom().getId()));
-        message.setText("Movie added!");
+        SendMessage message = new SendMessage()
+                .setChatId(Long.valueOf(update.getCallbackQuery().getFrom().getId()))
+                .setText("Movie added!");
         try {
             bot.execute(message);
         } catch (TelegramApiException e) {
@@ -61,19 +61,26 @@ public class ButtonServiceImpl implements ButtonService {
 
     @Override
     public void deleteMovie() {
-        AnswerCallbackQuery answer = new AnswerCallbackQuery();
-        answer.setText("Processing...");
-        answer.setCallbackQueryId(update.getCallbackQuery().getId());
-        answer.setShowAlert(false);
+        AnswerCallbackQuery answer = new AnswerCallbackQuery()
+                .setText("Processing...")
+                .setCallbackQueryId(update.getCallbackQuery().getId())
+                .setShowAlert(false);
         try {
             bot.execute(answer);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-
         try {
             apiService.deleteMovie(update.getCallbackQuery().getFrom().getId(), update.getCallbackQuery().getData().substring(1));
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        SendMessage message = new SendMessage()
+                .setChatId(String.valueOf(update.getCallbackQuery().getFrom().getId()))
+                .setText("Movie removed!");
+        try {
+            bot.execute(message);
+        } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }

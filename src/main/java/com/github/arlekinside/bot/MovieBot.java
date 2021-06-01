@@ -5,7 +5,6 @@ import com.github.arlekinside.services.MessageService;
 import com.github.arlekinside.services.api.MovieApiServiceImpl;
 import com.github.arlekinside.services.implementations.ButtonServiceImpl;
 import com.github.arlekinside.services.implementations.CommandServiceImpl;
-import com.google.gson.Gson;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;

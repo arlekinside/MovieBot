@@ -75,65 +75,65 @@ public class MessageServiceImpl implements MessageService {
             e.printStackTrace();
         }
         if (movie == null) {
-            SendMessage msg = new SendMessage();
-            msg.setChatId(update.getMessage().getChatId());
-            msg.setText("Can't find the movie, try again please");
+            SendMessage msg = new SendMessage()
+                    .setChatId(update.getMessage().getChatId())
+                    .setText("Can't find the movie, try again please");
             try {
                 bot.execute(msg);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
-        }
+        } else {
 
-        SendChatAction action = new SendChatAction();
-        action.setChatId(update.getMessage().getChatId());
-        action.setAction(ActionType.UPLOADPHOTO);
-        try {
-            bot.execute(action);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+            SendChatAction action = new SendChatAction()
+                    .setChatId(update.getMessage().getChatId())
+                    .setAction(ActionType.UPLOADPHOTO);
+            try {
+                bot.execute(action);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
 
-        SendPhoto message = new SendPhoto();
-        message.setChatId(update.getMessage().getChatId());
-        message.setPhoto(movie.getImage());
-        string.append("Title --> ")
-                .append(movie.getTitle())
-                .append('\n')
-                .append("Description --> ")
-                .append(movie.getDescription())
-                .append('\n')
-                .append("IMBD ID --> ")
-                .append(movie.getId());
-        message.setCaption(string.toString());
-        string = new StringBuilder();
-        string.append('|')
-                .append(movie.getId());
-        InlineKeyboard keyboard = new InlineKeyboard.Builder()
-                .button("Add", string.toString())
-                .row()
-                .build();
-        message.setReplyMarkup(keyboard.getKeyboard());
-        try {
-            bot.execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+            SendPhoto message = new SendPhoto()
+                    .setChatId(update.getMessage().getChatId())
+                    .setPhoto(movie.getImage());
+            string.append("Title --> ")
+                    .append(movie.getTitle())
+                    .append('\n')
+                    .append("Description --> ")
+                    .append(movie.getDescription())
+                    .append('\n')
+                    .append("IMBD ID --> ")
+                    .append(movie.getId());
+            message.setCaption(string.toString());
+            string = new StringBuilder();
+            string.append('|')
+                    .append(movie.getId());
+            InlineKeyboard keyboard = new InlineKeyboard.Builder()
+                    .button("Add", string.toString())
+                    .row()
+                    .build();
+            message.setReplyMarkup(keyboard.getKeyboard());
+            try {
+                bot.execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+            try {
+                com.github.arlekinside.models.User user = apiService.getUser(update.getMessage().getFrom().getId());
+                user.setStatus(UserStatus.COMMAND);
+                apiService.addUser(user);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        try {
-            com.github.arlekinside.models.User user = apiService.getUser(update.getMessage().getFrom().getId());
-            user.setStatus(UserStatus.COMMAND);
-            apiService.addUser(user);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     @Override
-    public void responseButtons(ButtonService buttonService){
-        if(buttonService.getUpdate().getCallbackQuery().getData().startsWith("|")){
+    public void responseButtons(ButtonService buttonService) {
+        if (buttonService.getUpdate().getCallbackQuery().getData().startsWith("|")) {
             buttonService.addMovie();
-        }else if(buttonService.getUpdate().getCallbackQuery().getData().startsWith("-")){
+        } else if (buttonService.getUpdate().getCallbackQuery().getData().startsWith("-")) {
             buttonService.deleteMovie();
         }
     }

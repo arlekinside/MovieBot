@@ -42,7 +42,20 @@ public class CommandServiceImpl implements CommandService {
 
     @Override
     public void help() {
-
+        SendMessage message = new SendMessage();
+        message.setChatId(update.getMessage().getChatId());
+        message.setText("Oh, you want some help.\n" +
+                "I'm gonna try to do something with this.\n\n" +
+                "So, here is explanation to all the commands I have:\n\n" +
+                "/start - the command that writes u to my database, so I can create personal favourites list.\n\n" +
+                "/help - are u sure I need to explain?\n\n" +
+                "/find - the command turns you to \"Find\" mode, so the next message u type would be sent to world's government servers and find there some movie matching ur message.\n\n" +
+                "/favourites - the thing why I'm still working. There u can find all the movies u added before and remove them from the list.");
+        try {
+            bot.execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -65,7 +78,12 @@ public class CommandServiceImpl implements CommandService {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-        User user = new User(update.getMessage().getFrom());
+        User user = null;
+        try {
+            user = apiService.getUser(update.getMessage().getFrom().getId());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         user.setStatus(UserStatus.FIND_TITLE);
         try {
             apiService.addUser(user);
@@ -77,8 +95,8 @@ public class CommandServiceImpl implements CommandService {
     @Override
     public void favorites() {
         User user = new User(update.getMessage().getFrom());
-        SendMessage message = new SendMessage();
-        message.setChatId(update.getMessage().getChatId());
+        SendMessage message = new SendMessage()
+                .setChatId(update.getMessage().getChatId());
         List<Movie> movies = null;
         try {
             movies = apiService.getFavourites(update.getMessage().getFrom().getId());
@@ -94,9 +112,9 @@ public class CommandServiceImpl implements CommandService {
             }
         } else {
 
-            SendChatAction action = new SendChatAction();
-            action.setChatId(update.getMessage().getChatId());
-            action.setAction(ActionType.UPLOADPHOTO);
+            SendChatAction action = new SendChatAction()
+                    .setChatId(update.getMessage().getChatId())
+                    .setAction(ActionType.UPLOADPHOTO);
             try {
                 bot.execute(action);
             } catch (TelegramApiException e) {
